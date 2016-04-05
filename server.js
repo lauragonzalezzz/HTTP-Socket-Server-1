@@ -17,22 +17,22 @@ var server = net.createServer(function(request){
 
   if (myData.indexOf("GET /404.html") !== -1){
     request.write(
-      "status: 200 OK, date: " + date +", server: LG Servers" + html404
+      "HTTP/1.1 200 OK \n" + "date: " + date + "\n" + "server: LG Servers \n\n" + html404
      );
   } else if (myData.indexOf("GET /helium.html") !== -1){
     request.write(
-      "status: 200 OK, date: " + date +", server: LG Servers" + helium
+      "HTTP/1.1 200 OK \n" + "date: " + date + "\n" + "server: LG Servers \n\n" + helium
      );
   } else if (myData.indexOf("GET /hydrogen.html") !== -1){
     request.write(
-      "status: 200 OK, date: " + date +", server: LG Servers" + hydrogen
+      "HTTP/1.1 200 OK \n" + "date: " + date + "\n" + "server: LG Servers \n\n" + hydrogen
      );
   } else if ((myData.indexOf("GET /index.html") !== -1) || (myData.indexOf("GET / ") !== -1)){
     request.write(
-      "status: 200 OK, date: " + date +", server: LG Servers" + index
+      "HTTP/1.1 200 OK \n" + "date: " + date + "\n" + "server: LG Servers \n\n" + index
      );
   } else {
-    request.write("status: 404 Not Found, date: " + date + ", server: LG Servers");
+    request.write("HTTP/1.1 404 Not Found \n" + "date: " + date + "\n" + "server: LG Servers \n\n");
   }
 
 
