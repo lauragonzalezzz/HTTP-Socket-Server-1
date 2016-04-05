@@ -1,4 +1,5 @@
 var net = require('net');
+var fs = require('fs');
 var server = net.createServer(function(request){
 
   var html404 = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>Element not found!</title><link rel=\"stylesheet\" href=\"/css/styles.css\"></head><body><h1>404</h1><h2>Element not found!</h2><p><a href=\"/\">back</a></p></body></html>";
@@ -10,34 +11,51 @@ var server = net.createServer(function(request){
   var index = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>The Elements</title><link rel=\"stylesheet\" href=\"/css/styles.css\"></head><body><h1>The Elements</h1><h2>These are all the known elements.</h2><h3>These are 2</h3><ol><li><a href=\"/hydrogen.html\">Hydrogen</a></li><li><a href=\"/helium.html\">Helium</a></li></ol></body></html>";
 
 
+
   request.on('data', function(data){
-    var myData = data.toString();
+    var myData = "." + data.toString().split('\n')[0].split(' ')[1].toString();
+
     var date = new Date();
     date = date.toUTCString();
 
-  if (myData.indexOf("GET /404.html") !== -1){
-    request.write(
-      "HTTP/1.1 200 OK \n" + "date: " + date + "\n" + "server: LG Servers \n\n" + html404
-     );
-  } else if (myData.indexOf("GET /helium.html") !== -1){
-    request.write(
-      "HTTP/1.1 200 OK \n" + "date: " + date + "\n" + "server: LG Servers \n\n" + helium
-     );
-  } else if (myData.indexOf("GET /hydrogen.html") !== -1){
-    request.write(
-      "HTTP/1.1 200 OK \n" + "date: " + date + "\n" + "server: LG Servers \n\n" + hydrogen
-     );
-  } else if ((myData.indexOf("GET /index.html") !== -1) || (myData.indexOf("GET / ") !== -1)){
-    request.write(
-      "HTTP/1.1 200 OK \n" + "date: " + date + "\n" + "server: LG Servers \n\n" + index
-     );
-  } else {
-    request.write("HTTP/1.1 404 Not Found \n" + "date: " + date + "\n" + "server: LG Servers \n\n");
-  }
-
-
-    request.end();
+    fs.readFile(myData, function(err, data){
+      if (err) {
+        request.write("HTTP/1.1 404 Not Found \n" + "date: " + date + "\n" + "server: LG Servers \n\n")
+      }
+      else {
+        request.write("HTTP/1.1 200 OK \n" + "date: " + date + "\n" + "server: LG Servers \n\n" + data);
+      }
+      request.end();
+    });
   });
+
+
+
+  // if (myData.indexOf("GET /404.html") !== -1){
+  //   request.write(
+  //     "HTTP/1.1 200 OK \n" + "date: " + date + "\n" + "server: LG Servers \n\n" + html404
+  //    );
+  // } else if (myData.indexOf("GET /helium.html") !== -1){
+  //   request.write(
+  //     "HTTP/1.1 200 OK \n" + "date: " + date + "\n" + "server: LG Servers \n\n" + helium
+  //    );
+  // } else if (myData.indexOf("GET /hydrogen.html") !== -1){
+  //   request.write(
+  //     "HTTP/1.1 200 OK \n" + "date: " + date + "\n" + "server: LG Servers \n\n" + hydrogen
+  //    );
+  // } else if ((myData.indexOf("GET /index.html") !== -1) || (myData.indexOf("GET / ") !== -1)){
+  //   request.write(
+  //     "HTTP/1.1 200 OK \n" + "date: " + date + "\n" + "server: LG Servers \n\n" + index
+  //    );
+  // } else if (myData.indexOf("GET /css/styles.css") !== -1){
+  //   request.write(
+  //     "HTTP/1.1 200 OK \n" + "date: " + date + "\n" + "server: LG Servers \n\n" + styles
+  //     );
+  // } else {
+  //   request.write("HTTP/1.1 404 Not Found \n" + "date: " + date + "\n" + "server: LG Servers \n\n");
+  // }
+
+
 
   request.on('end', function(){
     console.log('Socket connection ended');
