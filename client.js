@@ -7,12 +7,22 @@ var client = net.createConnection({port: 8080}, function(){
   var date = new Date();
   date = date.toUTCString();
 
-  client.write(
-    'GET ' + path + ' HTTP/1.1 \n' +
-    'Date: ' + date + '\n' +
-    'Host: localhost' +
-    'User-Agent: MEEEEeeeeEeEeEEee!');
+  // var responseHeaders = [];
+
+  if (path === undefined){
+    console.log(
+      'Please indicate which file to access \n' +
+      'Example: node client.js www.devleague.com');
+    client.end();
+  } else {
+      client.write(
+        'GET ' + path + ' HTTP/1.1 \n' +
+        'Date: ' + date + '\n' +
+        'Host: localhost' +
+        'User-Agent: MEEEEeeeeEeEeEEee!')
+  };
 });
+
 
 client.on('data', function(data){
   console.log(data.toString());
