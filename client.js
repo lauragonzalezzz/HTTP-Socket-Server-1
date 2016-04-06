@@ -1,8 +1,20 @@
 var net = require('net');
 var stream = require('stream');
 
-var client = net.createConnection({host: 'www.devleague.com', port: 80}, function(){
+  var host = process.argv[2]
+  if (host.indexOf(':') !== -1){
+    var index = host.indexOf(':') + 3;
+    host = host.slice(index, host.length);
+  }
+  var slash = host.indexOf('/');
+  host = host.slice(0, slash);
+
   var path = process.argv[2];
+  var pathBegin = path.indexOf('/');
+  path = path.slice(pathBegin);
+
+
+var client = net.createConnection({host: host, port: 80}, function(){
 
   var date = new Date();
   date = date.toUTCString();
@@ -10,15 +22,15 @@ var client = net.createConnection({host: 'www.devleague.com', port: 80}, functio
 
   if (path === undefined){
     console.log(
-      'Please indicate which file to access \n' +
+      'Please indicate which file to access\n' +
       'Example: node client.js www.devleague.com');
     client.end();
   } else {
       client.write(
-        'GET / HTTP/1.1 \n' +
+        'GET ' + path + ' HTTP/1.1\n' +
         'Date: ' + date + '\n' +
-        'Host: www.devleague.com \n' +
-        'User-Agent: MEEEEeeeeEeEeEEee! \r\n\r\n')
+        'Host: '+ host +'\n' +
+        'User-Agent: MEEEEeeeeEeEeEEee!\r\n\r\n')
   };
 });
 
