@@ -1,5 +1,5 @@
 var net = require('net');
-var stream = require('stream');
+var myData = null;
 
   var host = process.argv[2]
   if (host.indexOf(':') !== -1){
@@ -8,13 +8,19 @@ var stream = require('stream');
   }
   var slash = host.indexOf('/');
   host = host.slice(0, slash);
+  port = 80;
+
+  if (host.indexOf('www') === -1){
+    host = 'localhost';
+    port = 8080;
+  }
 
   var path = process.argv[2];
   var pathBegin = path.indexOf('/');
   path = path.slice(pathBegin);
 
 
-var client = net.createConnection({host: host, port: 80}, function(){
+var client = net.createConnection({host: host, port: port}, function(){
 
   var date = new Date();
   date = date.toUTCString();
@@ -36,7 +42,7 @@ var client = net.createConnection({host: host, port: 80}, function(){
 
 
 client.on('data', function(data){
-  console.log(data.toString());
+  myData = data.toString();
 
   var responseHeadersArr = [];
   var responseHeader = data.toString().split('\n\n')[0].split('\n');
@@ -46,6 +52,7 @@ client.on('data', function(data){
 });
 
 client.on('end', function(){
+  process.stdout.write(myData + "\n");
   console.log('disconnected from server');
 });
 
