@@ -7,7 +7,6 @@ var client = net.createConnection({port: 8080}, function(){
   var date = new Date();
   date = date.toUTCString();
 
-  // var responseHeaders = [];
 
   if (path === undefined){
     console.log(
@@ -25,7 +24,12 @@ var client = net.createConnection({port: 8080}, function(){
 
 
 client.on('data', function(data){
-  console.log(data.toString());
+
+  var responseHeadersArr = [];
+
+  var responseHeader = data.toString().split('\n\n')[0].split('\n');
+
+  responseHeadersArr.push(responseHeader);
 
   client.end();
 });
